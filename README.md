@@ -38,7 +38,6 @@ This application is designed to manage leave requests for employees in an organi
 
 ### Project Structure:
 - `main.go`: The entry point of the application.
-- `internal/`: Contains the core application logic, including models, handlers, and database interactions.
 - `config.yaml`: Configuration file for the application settings.
 - `internal/migrations/`: Contains database migration files.
 - `go.mod` and `go.sum`: Go module files for dependency management.
