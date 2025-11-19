@@ -61,12 +61,8 @@ This application is designed to manage leave requests for employees in an organi
    
 ### How to run with docker :
 1. Ensure you have Docker installed on your machine.
-2. Build the Docker image using the command:
+2. Build the Docker image and run the container using the command:
    ```
    docker-compose up --build -d
    ```
-3. Run the Docker container using the command:
-   ```
-   docker-compose up -d
-   ```
-4. Access the application at `http://localhost:8080` (or the port specified in your `docker-compose.yml` file).
+3. Access the application at `http://localhost:9090` (or the port specified in your `docker-compose.yml` file).
