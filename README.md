@@ -50,6 +50,7 @@ This application is designed to manage leave requests for employees in an organi
 - `services/` : Contains business logic and service layer code.
 - `repositories/` : Contains data access layer code.
 - `middleware/` : Contains middleware functions for request processing.
+- `routes/` : Contains route definitions and setup.
 
 ### How to run tests :
 1. Ensure you have a testing database set up.

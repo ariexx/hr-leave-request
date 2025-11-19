@@ -1,4 +1,22 @@
-FROM ubuntu:latest
-LABEL authors="macbook"
+FROM golang:1.25-alpine AS builder
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o hr-leave-request .
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/hr-leave-request .
+
+COPY config.yaml.example ./config.yaml
+
+EXPOSE 8080
+
+CMD ["./hr-leave-request"]
