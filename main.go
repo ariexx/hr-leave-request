@@ -1,28 +1,22 @@
 package main
 
 import (
-	"hr-leave-request/config"
+	"fmt"
 
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	// load config
-	cfg, err := config.LoadConfig()
+	// Initialize app with wire
+	app, err := InitializeApp()
 	if err != nil {
-		logrus.Fatalf("failed to load config: %v", err)
+		logrus.Fatalf("failed to initialize app: %v", err)
 	}
 
-	// setup logger based on environment
-	if cfg.AppConfig.Environment == "production" {
-		logrus.SetLevel(logrus.InfoLevel)
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-	} else {
-		logrus.SetLevel(logrus.DebugLevel)
-		logrus.SetFormatter(&logrus.TextFormatter{
-			FullTimestamp: true,
-		})
+	// Start server
+	port := 3000
+	logrus.Infof("Starting HR Leave Request API on port %d", port)
+	if err := app.Listen(fmt.Sprintf(":%d", port)); err != nil {
+		logrus.Fatalf("failed to start server: %v", err)
 	}
-
-	logrus.Infof("Starting application in %s mode on port %d", cfg.AppConfig.Environment, cfg.AppConfig.Port)
 }
