@@ -58,3 +58,14 @@ This application is designed to manage leave requests for employees in an organi
    ```
    go test ./...
    ```
+   
+### How to run with docker :
+1. Ensure you have Docker installed on your machine.
+2. Build the Docker image using the command:
+   ```
+   docker build -t hr-leave-requests .
+   ```
+3. Run the Docker container using the command:
+   ```
+    docker run -p 8080:8080 hr-leave-request
+    ```
