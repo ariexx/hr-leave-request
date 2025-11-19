@@ -1,0 +1,3 @@
+ALTER TABLE leave_requests
+    MODIFY COLUMN start_date DATETIME NOT NULL,
+    MODIFY COLUMN end_date DATETIME NOT NULL;
