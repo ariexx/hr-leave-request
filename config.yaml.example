@@ -1,0 +1,16 @@
+app:
+  port: 9090
+  debug: true
+  log_level: "info"
+  environment: "production"
+
+database:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: ""
+  name: "hr_leave_requests"
+
+jwt:
+  secret: "eaea"
+  expiration: 24  # in hours
