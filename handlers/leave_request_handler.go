@@ -111,10 +111,11 @@ func (h *LeaveRequestHandler) GetLeaveRequests(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
-		Success: true,
-		Message: "Leave requests retrieved successfully",
-		Data:    leaveRequests,
+	return c.Status(fiber.StatusOK).JSON(dtos.SuccessResponsePaginated{
+		Success:    true,
+		Message:    "Leave requests retrieved successfully",
+		Data:       leaveRequests.Data,
+		Pagination: leaveRequests.Pagination,
 	})
 }
 

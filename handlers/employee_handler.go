@@ -102,9 +102,10 @@ func (h *EmployeeHandler) GetEmployees(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
-		Success: true,
-		Message: "Employees retrieved successfully",
-		Data:    employees,
+	return c.Status(fiber.StatusOK).JSON(dtos.SuccessResponsePaginated{
+		Success:    true,
+		Message:    "Employees retrieved successfully",
+		Data:       employees.Data,
+		Pagination: employees.Pagination,
 	})
 }

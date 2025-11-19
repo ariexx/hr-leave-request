@@ -49,3 +49,10 @@ type SuccessResponse struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 }
+
+type SuccessResponsePaginated struct {
+	Success    bool               `json:"success"`
+	Message    string             `json:"message"`
+	Data       interface{}        `json:"data,omitempty"`
+	Pagination PaginationMetadata `json:"pagination"`
+}
