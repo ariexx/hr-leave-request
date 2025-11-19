@@ -63,9 +63,10 @@ This application is designed to manage leave requests for employees in an organi
 1. Ensure you have Docker installed on your machine.
 2. Build the Docker image using the command:
    ```
-   docker build -t hr-leave-requests .
+   docker-compose up --build -d
    ```
 3. Run the Docker container using the command:
    ```
-    docker run -p 8080:8080 hr-leave-request
-    ```
+   docker-compose up -d
+   ```
+4. Access the application at `http://localhost:8080` (or the port specified in your `docker-compose.yml` file).

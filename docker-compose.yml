@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hr-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: hr_leave_requests
+    ports:
+      - "33060:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: hr-leave-request
+    ports:
+      - "9090:9090"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root123
+      - DATABASE_NAME=hr_leave_requests
+
+volumes:
+  mysql_data:

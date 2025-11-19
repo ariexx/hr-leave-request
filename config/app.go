@@ -33,6 +33,17 @@ func LoadConfig() (*ApplicationConfig, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 
+	// Enable environment variable support
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("")
+
+	// Bind env so the docker can override config values
+	viper.BindEnv("database.host", "DATABASE_HOST")
+	viper.BindEnv("database.port", "DATABASE_PORT")
+	viper.BindEnv("database.user", "DATABASE_USER")
+	viper.BindEnv("database.password", "DATABASE_PASSWORD")
+	viper.BindEnv("database.name", "DATABASE_NAME")
+
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, err
 	}

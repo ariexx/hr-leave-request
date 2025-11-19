@@ -17,6 +17,6 @@ COPY --from=builder /app/hr-leave-request .
 
 COPY config.yaml.example ./config.yaml
 
-EXPOSE 8080
+EXPOSE 9090
 
 CMD ["./hr-leave-request"]
