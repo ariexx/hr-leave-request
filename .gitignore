@@ -4,4 +4,3 @@ server
 tmp/
 .env
 config.yaml
-wire_gen.go
