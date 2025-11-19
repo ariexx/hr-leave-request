@@ -16,9 +16,15 @@ type DatabaseConfig struct {
 	Name     string `mapstructure:"name"`
 }
 
+type JWTConfig struct {
+	Secret     string `mapstructure:"secret"`
+	Expiration int    `mapstructure:"expiration"` // in hours
+}
+
 type ApplicationConfig struct {
 	AppConfig AppConfig      `mapstructure:"app"`
 	Database  DatabaseConfig `mapstructure:"database"`
+	JWT       JWTConfig      `mapstructure:"jwt"`
 }
 
 func LoadConfig() (*ApplicationConfig, error) {

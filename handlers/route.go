@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"hr-leave-request/config"
+	"hr-leave-request/middleware"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler) {
+func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler, authHandler *AuthHandler, cfg *config.ApplicationConfig) {
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
@@ -29,8 +32,19 @@ func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler) {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
-	// Employee routes
-	employees := v1.Group("/employees")
+	// Auth routes (public)
+	auth := v1.Group("/auth")
+	{
+		auth.Post("/login", authHandler.Login)
+		auth.Post("/register", authHandler.Register)
+	}
+
+	// Protected routes
+	protected := v1.Group("")
+	protected.Use(middleware.JWTMiddleware(cfg))
+
+	// Employee routes (protected)
+	employees := protected.Group("/employees")
 	{
 		employees.Post("/", employeeHandler.CreateEmployee)
 		employees.Get("/", employeeHandler.GetEmployees)

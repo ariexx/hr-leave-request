@@ -7,6 +7,7 @@
 package injector
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"hr-leave-request/config"
 	"hr-leave-request/handlers"
@@ -28,17 +29,28 @@ func InitializeApp() (*fiber.App, error) {
 	employeeRepository := repositories.NewEmployeeRepository(db)
 	employeeService := services.NewEmployeeService(employeeRepository)
 	employeeHandler := handlers.NewEmployeeHandler(employeeService)
-	app := NewFiberApp(employeeHandler)
+	authService := services.NewAuthService(employeeRepository, applicationConfig)
+	validate := NewValidator()
+	authHandler := handlers.NewAuthHandler(authService, validate)
+	app := NewFiberApp(employeeHandler, authHandler, applicationConfig)
 	return app, nil
 }
 
 // wire.go:
 
-func NewFiberApp(employeeHandler *handlers.EmployeeHandler) *fiber.App {
+func NewFiberApp(
+	employeeHandler *handlers.EmployeeHandler,
+	authHandler *handlers.AuthHandler,
+	cfg *config.ApplicationConfig,
+) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName: "HR Leave Request API",
 	})
-	handlers.SetupRoutes(app, employeeHandler)
+	handlers.SetupRoutes(app, employeeHandler, authHandler, cfg)
 
 	return app
+}
+
+func NewValidator() *validator.Validate {
+	return validator.New()
 }
