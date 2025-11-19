@@ -1,5 +1,3 @@
--- +goose Up
--- +goose StatementBegin
 CREATE TABLE leave_requests (
     id INT NOT NULL AUTO_INCREMENT,
     employee_id INT NOT NULL,
@@ -18,9 +16,3 @@ CREATE TABLE leave_requests (
     CHECK (status IN ('pending', 'approved', 'rejected')),
     INDEX idx_employee_id (employee_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- +goose StatementEnd
-
--- +goose Down
--- +goose StatementBegin
-DROP TABLE leave_requests;
--- +goose StatementEnd

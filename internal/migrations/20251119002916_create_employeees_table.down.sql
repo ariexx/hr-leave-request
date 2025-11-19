@@ -1,5 +1,3 @@
--- +goose Up
--- +goose StatementBegin
 CREATE TABLE employees (
     id int NOT NULL AUTO_INCREMENT,
     name varchar(100) NOT NULL,
@@ -10,9 +8,3 @@ CREATE TABLE employees (
     deleted_at timestamp NULL DEFAULT NULL,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- +goose StatementEnd
-
--- +goose Down
--- +goose StatementBegin
-DROP TABLE employees;
--- +goose StatementEnd
