@@ -17,6 +17,8 @@ type LeaveRequestService interface {
 	GetLeaveRequests(req *dtos.GetLeaveRequestsRequest) (*dtos.GetLeaveRequestsResponse, error)
 	UpdateLeaveRequest(id uint, employeeID uint, userRole string, req *dtos.UpdateLeaveRequestRequest) (*dtos.LeaveRequestResponse, error)
 	DeleteLeaveRequest(id uint, employeeID uint, userRole string) error
+	ApproveLeaveRequest(id uint, userRole string) (*dtos.LeaveRequestResponse, error)
+	RejectLeaveRequest(id uint, userRole string) (*dtos.LeaveRequestResponse, error)
 }
 
 type leaveRequestService struct {
@@ -234,6 +236,75 @@ func (s *leaveRequestService) DeleteLeaveRequest(id uint, employeeID uint, userR
 	}
 
 	return s.repo.Delete(id)
+}
+
+func (s *leaveRequestService) ApproveLeaveRequest(id uint, userRole string) (*dtos.LeaveRequestResponse, error) {
+	// Only HR can approve
+	if userRole != "hr" && userRole != "HR" {
+		return nil, errors.New("only HR can approve leave requests")
+	}
+
+	// Get existing leave request
+	leaveRequest, err := s.repo.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("leave request not found")
+		}
+		return nil, err
+	}
+
+	// Check for overlapping approved leave requests before approving
+	hasOverlap, err := s.repo.HasOverlappingApprovedLeave(leaveRequest.EmployeeID, leaveRequest.StartDate, leaveRequest.EndDate, &id)
+	if err != nil {
+		return nil, err
+	}
+	if hasOverlap {
+		return nil, errors.New("overlapping approved leave request exists for this date range")
+	}
+
+	// Update status to approved
+	leaveRequest.Status = "approved"
+	if err := s.repo.Update(leaveRequest); err != nil {
+		return nil, err
+	}
+
+	// Reload to get updated employee data
+	leaveRequest, err = s.repo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.toLeaveRequestResponse(leaveRequest), nil
+}
+
+func (s *leaveRequestService) RejectLeaveRequest(id uint, userRole string) (*dtos.LeaveRequestResponse, error) {
+	// Only HR can reject
+	if userRole != "hr" && userRole != "HR" {
+		return nil, errors.New("only HR can reject leave requests")
+	}
+
+	// Get existing leave request
+	leaveRequest, err := s.repo.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("leave request not found")
+		}
+		return nil, err
+	}
+
+	// Update status to rejected
+	leaveRequest.Status = "rejected"
+	if err := s.repo.Update(leaveRequest); err != nil {
+		return nil, err
+	}
+
+	// Reload to get updated employee data
+	leaveRequest, err = s.repo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.toLeaveRequestResponse(leaveRequest), nil
 }
 
 func (s *leaveRequestService) toLeaveRequestResponse(lr *models.LeaveRequest) *dtos.LeaveRequestResponse {

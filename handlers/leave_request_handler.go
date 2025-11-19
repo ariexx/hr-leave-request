@@ -220,3 +220,95 @@ func (h *LeaveRequestHandler) DeleteLeaveRequest(c *fiber.Ctx) error {
 		Message: "Leave request deleted successfully",
 	})
 }
+
+func (h *LeaveRequestHandler) ApproveLeaveRequest(c *fiber.Ctx) error {
+	idParam := c.Params("id")
+	id, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(dtos.ErrorResponse{
+			Error:   "Bad Request",
+			Message: "Invalid leave request ID",
+		})
+	}
+
+	// Get user role from JWT middleware
+	var userRole string
+	if role := c.Locals("role"); role != nil {
+		if roleStr, ok := role.(string); ok {
+			userRole = roleStr
+		}
+	}
+
+	leaveRequest, err := h.service.ApproveLeaveRequest(uint(id), userRole)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to approve leave request")
+		statusCode := fiber.StatusInternalServerError
+		message := err.Error()
+
+		switch message {
+		case "leave request not found":
+			statusCode = fiber.StatusNotFound
+		case "only HR can approve leave requests":
+			statusCode = fiber.StatusForbidden
+		case "overlapping approved leave request exists for this date range":
+			statusCode = fiber.StatusBadRequest
+		}
+
+		return c.Status(statusCode).JSON(dtos.ErrorResponse{
+			Error:   "Approve Failed",
+			Message: message,
+		})
+	}
+
+	logrus.WithField("leave_request_id", id).Info("Leave request approved successfully")
+	return c.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
+		Success: true,
+		Message: "Leave request approved successfully",
+		Data:    leaveRequest,
+	})
+}
+
+func (h *LeaveRequestHandler) RejectLeaveRequest(c *fiber.Ctx) error {
+	idParam := c.Params("id")
+	id, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(dtos.ErrorResponse{
+			Error:   "Bad Request",
+			Message: "Invalid leave request ID",
+		})
+	}
+
+	// Get user role from JWT middleware
+	var userRole string
+	if role := c.Locals("role"); role != nil {
+		if roleStr, ok := role.(string); ok {
+			userRole = roleStr
+		}
+	}
+
+	leaveRequest, err := h.service.RejectLeaveRequest(uint(id), userRole)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to reject leave request")
+		statusCode := fiber.StatusInternalServerError
+		message := err.Error()
+
+		switch message {
+		case "leave request not found":
+			statusCode = fiber.StatusNotFound
+		case "only HR can reject leave requests":
+			statusCode = fiber.StatusForbidden
+		}
+
+		return c.Status(statusCode).JSON(dtos.ErrorResponse{
+			Error:   "Reject Failed",
+			Message: message,
+		})
+	}
+
+	logrus.WithField("leave_request_id", id).Info("Leave request rejected successfully")
+	return c.Status(fiber.StatusOK).JSON(dtos.SuccessResponse{
+		Success: true,
+		Message: "Leave request rejected successfully",
+		Data:    leaveRequest,
+	})
+}

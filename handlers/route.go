@@ -16,7 +16,7 @@ func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler, authHandler *
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
+		AllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 
@@ -59,5 +59,7 @@ func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler, authHandler *
 		leaveRequests.Get("/:id", leaveRequestHandler.GetLeaveRequestByID)
 		leaveRequests.Put("/:id", leaveRequestHandler.UpdateLeaveRequest)
 		leaveRequests.Delete("/:id", leaveRequestHandler.DeleteLeaveRequest)
+		leaveRequests.Patch("/:id/approve", leaveRequestHandler.ApproveLeaveRequest)
+		leaveRequests.Patch("/:id/reject", leaveRequestHandler.RejectLeaveRequest)
 	}
 }
