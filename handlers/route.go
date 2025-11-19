@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler, authHandler *AuthHandler, cfg *config.ApplicationConfig) {
+func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler, authHandler *AuthHandler, leaveRequestHandler *LeaveRequestHandler, cfg *config.ApplicationConfig) {
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
@@ -49,5 +49,15 @@ func SetupRoutes(app *fiber.App, employeeHandler *EmployeeHandler, authHandler *
 		employees.Post("/", employeeHandler.CreateEmployee)
 		employees.Get("/", employeeHandler.GetEmployees)
 		employees.Get("/:id", employeeHandler.GetEmployeeByID)
+	}
+
+	// Leave request routes (protected)
+	leaveRequests := protected.Group("/leave-requests")
+	{
+		leaveRequests.Post("/", leaveRequestHandler.CreateLeaveRequest)
+		leaveRequests.Get("/", leaveRequestHandler.GetLeaveRequests)
+		leaveRequests.Get("/:id", leaveRequestHandler.GetLeaveRequestByID)
+		leaveRequests.Put("/:id", leaveRequestHandler.UpdateLeaveRequest)
+		leaveRequests.Delete("/:id", leaveRequestHandler.DeleteLeaveRequest)
 	}
 }

@@ -20,10 +20,13 @@ func InitializeApp() (*fiber.App, error) {
 		config.NewDatabase,
 		NewValidator,
 		repositories.NewEmployeeRepository,
+		repositories.NewLeaveRequestRepository,
 		services.NewEmployeeService,
 		services.NewAuthService,
+		services.NewLeaveRequestService,
 		handlers.NewEmployeeHandler,
 		handlers.NewAuthHandler,
+		handlers.NewLeaveRequestHandler,
 		NewFiberApp,
 	)
 	return nil, nil
@@ -32,13 +35,14 @@ func InitializeApp() (*fiber.App, error) {
 func NewFiberApp(
 	employeeHandler *handlers.EmployeeHandler,
 	authHandler *handlers.AuthHandler,
+	leaveRequestHandler *handlers.LeaveRequestHandler,
 	cfg *config.ApplicationConfig,
 ) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName: "HR Leave Request API",
 	})
 
-	handlers.SetupRoutes(app, employeeHandler, authHandler, cfg)
+	handlers.SetupRoutes(app, employeeHandler, authHandler, leaveRequestHandler, cfg)
 
 	return app
 }
