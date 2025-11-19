@@ -45,6 +45,7 @@ func (s *employeeService) CreateEmployee(req *dtos.CreateEmployeeRequest) (*dtos
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
+		Role:     req.Role,
 	}
 
 	if err := s.repo.Create(employee); err != nil {
@@ -112,6 +113,7 @@ func (s *employeeService) toEmployeeResponse(employee *models.Employee) *dtos.Em
 		ID:        employee.ID,
 		Name:      employee.Name,
 		Email:     employee.Email,
+		Role:      employee.Role,
 		CreatedAt: employee.CreatedAt,
 		UpdatedAt: employee.UpdatedAt,
 	}

@@ -3,15 +3,17 @@ package dtos
 import "time"
 
 type CreateEmployeeRequest struct {
-	Name     string `json:"name" validate:"required,min=3,max=100"`
-	Email    string `json:"email" validate:"required,email,max=100"`
-	Password string `json:"password" validate:"required,min=6,max=255"`
+	Name     string  `json:"name" validate:"required,min=3,max=100"`
+	Email    string  `json:"email" validate:"required,email,max=100"`
+	Password string  `json:"password" validate:"required,min=6,max=255"`
+	Role     *string `json:"role" validate:"omitempty,oneof=employee hr manager"`
 }
 
 type EmployeeResponse struct {
 	ID        uint      `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
+	Role      *string   `json:"role,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
