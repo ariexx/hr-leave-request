@@ -22,6 +22,7 @@ type ApplicationConfig struct {
 }
 
 func LoadConfig() (*ApplicationConfig, error) {
+	viper.AddConfigPath(".")
 	viper.AddConfigPath("./config")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

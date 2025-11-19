@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"hr-leave-request/injector"
 
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	// Initialize app with wire
-	app, err := InitializeApp()
+	app, err := injector.InitializeApp()
 	if err != nil {
 		logrus.Fatalf("failed to initialize app: %v", err)
 	}

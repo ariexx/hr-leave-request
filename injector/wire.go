@@ -1,7 +1,7 @@
 //go:build wireinject
 // +build wireinject
 
-package main
+package injector
 
 import (
 	"hr-leave-request/config"
